@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+# Christopher Foster
+# Upload files to a filepicker.io account
+# Quick and dirty
+# Oct 09, 2012
+
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+import argparse
+import urllib2
+import urllib
+import json
+import sys
+
+def upload(file, url):
+	register_openers()
+	datagen, headers = multipart_encode({'fileUpload': open(file, 'rb')})
+	request = urllib2.Request(url, datagen, headers)
+	return urllib2.urlopen(request).read()
+
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='Upload files to a filepicker.io account')
+	parser.add_argument('--apikey', default='l5uQ3k7FQ5GoYCHyTdZV', help='Set the API key')
+	parser.add_argument('--referer', help='Set the referer')
+	parser.add_argument('FILE', help='File to upload')
+	args = parser.parse_args()
+
+	url = 'https://www.filepicker.io/api/upload/'
+
+	js_session = urllib.urlencode({
+		'js_session' : json.dumps({
+			'apikey'      : args.apikey,
+			'mimetypes'   : ['*/*'],
+			'persist'     : 'false',
+			'auth_tokens' : {}
+		})
+	})
+
+	url = url + '?' + js_session
+
+	print('Uploading... this may take some time.');
+	result = upload(args.FILE, url)
+
+	url = json.loads(result)['data'][0]['url']
+	print('Success. Find your file at: %s' % url)
