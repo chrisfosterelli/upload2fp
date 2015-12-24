@@ -5,7 +5,7 @@ Upload files to a filepicker.io user's S3 Bucket
 
 This requires [python-poster](https://github.com/synack/python-poster)
 
-See blog for more information: https://fosterelli.co/exploiting-filepickerio
+See blog for more information: https://fosterelli.co/exploiting-filepickerio.html
 
 Usage:
 
